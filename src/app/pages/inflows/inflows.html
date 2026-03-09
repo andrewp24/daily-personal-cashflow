@@ -1,1 +1,48 @@
-<p>inflows works!</p>
+<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 ms-5">
+    <legend class="fieldset-legend">Current Cash On Hand</legend>
+    <label class="label">Bank Account Cash</label>
+    <input class="input"
+        [ngClass]="{ 'input-error': inflowForm.cashOnHand().invalid() && inflowForm.cashOnHand().touched() }"
+        type="text" [formField]="inflowForm.cashOnHand" placeholder="1000.00" inputmode="decimal" />
+    @if (inflowForm.cashOnHand().invalid() && inflowForm.cashOnHand().touched()) {
+    <div class="text-red-600">
+        @for (error of inflowForm.cashOnHand().errors(); track error.kind) {
+        <span>{{ error.message }}</span>
+        }
+    </div>
+    }
+</fieldset>
+
+<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 ms-5">
+    <legend class="fieldset-legend">Current Inflow</legend>
+    <label class="label">Paycheck</label>
+    <input class="input"
+        [ngClass]="{ 'input-error': inflowForm.paycheckAmount1().invalid() && inflowForm.paycheckAmount1().touched() }"
+        type="text" [formField]="inflowForm.paycheckAmount1" placeholder="1000.00" inputmode="decimal" />
+    @if (inflowForm.paycheckAmount1().invalid() && inflowForm.paycheckAmount1().touched()) {
+    <div class="text-red-600">
+        @for (error of inflowForm.paycheckAmount1().errors(); track error.kind) {
+        <span>{{ error.message }}</span>
+        }
+    </div>
+    }
+</fieldset>
+
+<div class="stats bg-base-100 border-base-300 border">
+    <div class="stat">
+        <div class="stat-title">Account balance</div>
+        <div class="stat-value"> {{ inflowForm.cashOnHand().value().replace(/[^0-9.]/g, "") | currency }} </div>
+        <div class="stat-actions">
+            <button class="btn btn-xs btn-success">Add funds</button>
+        </div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-title">Current balance</div>
+        <div class="stat-value"> {{ inflowForm.cashOnHand().value().replace(/[^0-9.]/g, "") | currency }} </div>
+        <div class="stat-actions">
+            <button class="btn btn-xs">Withdrawal</button>
+            <button class="btn btn-xs">Deposit</button>
+        </div>
+    </div>
+</div>
