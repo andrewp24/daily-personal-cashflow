@@ -3,6 +3,8 @@ import { InflowData } from "./interfaces";
 import {
   form,
   FormField,
+  max,
+  min,
   pattern,
   required,
   validate,
@@ -18,15 +20,55 @@ const EDITING_AMOUNT_REGEX = /^\d*\.?\d{0,2}$/;
   styleUrl: "./inflows.css",
 })
 export class Inflows {
+  /*
+
+  TODO: this is what i should try to do for i guess most parts of the form since they are going to be customizable
+const orderModel = signal({
+  customerName: '',
+  items: [{product: '', quantity: 0, price: 0}],
+});
+const orderForm = form(orderModel);
+// Access array items by index
+orderForm.items[0].product; // FieldTree<string>
+orderForm.items[0].quantity; // FieldTree<number>
+
+
+
+
+
+
+
+
+  */
   inflowModel = signal<InflowData>({
     cashOnHand: "",
-    paycheckAmount1: "",
+    paycheckAmount: "",
+    paycheckCadence: "",
+    paycheckDayOfMonth: 1,
   });
+
+  cadenceOptions = [
+    { label: "Weekly", value: "weekly" },
+    { label: "Bi-Weekly", value: "biweekly" },
+    { label: "Monthly", value: "monthly" },
+  ];
 
   inflowForm = form(this.inflowModel, (schemaPath) => {
     required(schemaPath.cashOnHand, { message: "Cash on hand is required" });
-    required(schemaPath.paycheckAmount1, {
+    required(schemaPath.paycheckAmount, {
       message: "Paycheck amount is required",
+    });
+    required(schemaPath.paycheckDayOfMonth, {
+      message: "Paycheck day of month is required",
+    });
+    min(schemaPath.paycheckDayOfMonth, 1, {
+      message: "Day of month must be between 1 and 31",
+    });
+    max(schemaPath.paycheckDayOfMonth, 31, {
+      message: "Day of month must be between 1 and 31",
+    });
+    required(schemaPath.paycheckCadence, {
+      message: "Paycheck cadence is required",
     });
   });
 
@@ -49,7 +91,7 @@ export class Inflows {
     this.parseMoney(this.inflowForm.cashOnHand().value()),
   );
   paycheckAmount = computed(() =>
-    this.parseMoney(this.inflowForm.paycheckAmount1().value()),
+    this.parseMoney(this.inflowForm.paycheckAmount().value()),
   );
 
   private parseMoney(value: string): number {
