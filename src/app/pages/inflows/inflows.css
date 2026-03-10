@@ -1,3 +1,7 @@
 .input-invalid {
   border-color: red;
 }
+
+.required {
+  color: red;
+}
