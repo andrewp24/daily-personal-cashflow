@@ -1,4 +1,4 @@
-export interface Paycheck {
+export interface Income {
   name: string;
   amount: string;
   cadence: "weekly" | "biweekly" | "monthly" | "";
@@ -7,5 +7,5 @@ export interface Paycheck {
 
 export interface InflowData {
   cashOnHand: string;
-  paychecks: Paycheck[];
+  income: Income[];
 }

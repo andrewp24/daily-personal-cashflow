@@ -1,5 +1,5 @@
 import { Component, signal, computed } from "@angular/core";
-import { InflowData, Paycheck } from "./interfaces";
+import { InflowData, Income } from "./interfaces";
 import {
   applyEach,
   form,
@@ -22,7 +22,7 @@ export class Inflows {
   saveSuccessMessage = signal<string | null>(null);
   inflowModel = signal<InflowData>({
     cashOnHand: "",
-    paychecks: [{ name: "", amount: "", cadence: "", dayOfMonth: 1 }],
+    income: [{ name: "", amount: "", cadence: "", dayOfMonth: 1 }],
   });
 
   cadenceOptions = [
@@ -33,7 +33,7 @@ export class Inflows {
 
   inflowForm = form(this.inflowModel, (schemaPath) => {
     required(schemaPath.cashOnHand, { message: "Cash on hand is required" });
-    applyEach(schemaPath.paychecks, (itemPath) => {
+    applyEach(schemaPath.income, (itemPath) => {
       required(itemPath.amount, {
         message: "Paycheck amount is required",
       });
@@ -47,25 +47,25 @@ export class Inflows {
         message: "Day of month must be between 1 and 31",
       });
       required(itemPath.cadence, {
-        message: "Paycheck cadence is required",
+        message: "Income cadence is required",
       });
     });
   });
 
-  addPaycheck() {
+  addIncomeItem() {
     this.inflowModel.update((model) => ({
       ...model,
-      paychecks: [
-        ...model.paychecks,
+      income: [
+        ...model.income,
         { name: "", amount: "", cadence: "", dayOfMonth: 1 },
       ],
     }));
   }
 
-  removePaycheck(index: number) {
+  removeIncomeItem(index: number) {
     this.inflowModel.update((model) => ({
       ...model,
-      paychecks: model.paychecks.filter((_, i) => i !== index),
+      income: model.income.filter((_, i) => i !== index),
     }));
   }
 
@@ -76,13 +76,13 @@ export class Inflows {
     this.inflowModel.update((model) => ({ ...model, cashOnHand: normalized }));
   }
 
-  onPaycheckAmountBlur(index: number) {
-    const currentValue = this.inflowModel().paychecks[index].amount;
+  onIncomeAmountBlur(index: number) {
+    const currentValue = this.inflowModel().income[index].amount;
     const normalized = this.normalizeMoneyInput(currentValue);
     if (normalized === null) return;
     this.inflowModel.update((model) => ({
       ...model,
-      paychecks: model.paychecks.map((p, i) =>
+      income: model.income.map((p, i) =>
         i === index ? { ...p, amount: normalized } : p,
       ),
     }));
@@ -92,10 +92,10 @@ export class Inflows {
     this.parseMoney(this.inflowForm.cashOnHand().value()),
   );
 
-  totalPaycheckAmount = computed(() => {
+  totalIncomeAmount = computed(() => {
     let sum = 0;
-    for (const paycheck of this.inflowForm.paychecks) {
-      sum += this.parseMoney(paycheck.amount().value());
+    for (const income of this.inflowForm.income) {
+      sum += this.parseMoney(income.amount().value());
     }
     return sum;
   });
@@ -120,12 +120,12 @@ export class Inflows {
       this.isSaving.set(true);
       if (
         this.inflowForm.cashOnHand().valid() &&
-        this.inflowForm.paychecks().valid()
+        this.inflowForm.income().valid()
       ) {
         const cashData = this.inflowForm.cashOnHand().value();
-        const paychecksData = this.inflowForm.paychecks().value();
+        const incomeData = this.inflowForm.income().value();
         console.log("Saving inflow data:", cashData);
-        console.log("Saving paychecks data:", paychecksData);
+        console.log("Saving income data:", incomeData);
         // throw new Error("Simulated save error"); // Simulate an error for testing
       }
       this.saveSuccessMessage.set("Inflows saved successfully!");

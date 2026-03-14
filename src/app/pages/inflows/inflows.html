@@ -17,68 +17,68 @@
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
         <legend class="fieldset-legend">Current Inflows</legend>
 
-        @for (paycheck of inflowForm.paychecks; track $index) {
+        @for (incomeItem of inflowForm.income; track $index) {
         <div class="border-base-300 rounded-box border p-3 mb-3">
             <div class="flex justify-between items-center mb-2">
-                <span class="font-semibold text-sm">Paycheck {{ $index + 1 }}</span>
-                @if (inflowForm.paychecks.length > 1) {
-                <button class="btn btn-xs btn-error btn-outline" (click)="removePaycheck($index)">Remove</button>
+                <span class="font-semibold text-sm">Income Item {{ $index + 1 }}</span>
+                @if (inflowForm.income.length > 1) {
+                <button class="btn btn-xs btn-error btn-outline" (click)="removeIncomeItem($index)">Remove</button>
                 }
             </div>
 
-            <label class="label">Paycheck Name <span class="required">*</span></label>
-            <input class="input" (blur)="onPaycheckAmountBlur($index)"
-                [ngClass]="{ 'input-error': paycheck.name().invalid() && paycheck.name().touched() }" type="text"
-                [formField]="paycheck.name" placeholder="Paycheck Name" />
-            @if (paycheck.name().invalid() && paycheck.name().touched()) {
+            <label class="label">Income Name <span class="required">*</span></label>
+            <input class="input" (blur)="onIncomeAmountBlur($index)"
+                [ngClass]="{ 'input-error': incomeItem.name().invalid() && incomeItem.name().touched() }" type="text"
+                [formField]="incomeItem.name" placeholder="Income Name" />
+            @if (incomeItem.name().invalid() && incomeItem.name().touched()) {
             <div class="text-red-600">
-                @for (error of paycheck.name().errors(); track error.kind) {
+                @for (error of incomeItem.name().errors(); track error.kind) {
                 <span>{{ error.message }}</span>
                 }
             </div>
             }
 
-            <label class="label">Paycheck Amount <span class="required">*</span></label>
-            <input class="input" (blur)="onPaycheckAmountBlur($index)"
-                [ngClass]="{ 'input-error': paycheck.amount().invalid() && paycheck.amount().touched() }" type="text"
-                [formField]="paycheck.amount" placeholder="1000.00" inputmode="decimal" />
-            @if (paycheck.amount().invalid() && paycheck.amount().touched()) {
+            <label class="label">Income Amount <span class="required">*</span></label>
+            <input class="input" (blur)="onIncomeAmountBlur($index)"
+                [ngClass]="{ 'input-error': incomeItem.amount().invalid() && incomeItem.amount().touched() }"
+                type="text" [formField]="incomeItem.amount" placeholder="1000.00" inputmode="decimal" />
+            @if (incomeItem.amount().invalid() && incomeItem.amount().touched()) {
             <div class="text-red-600">
-                @for (error of paycheck.amount().errors(); track error.kind) {
+                @for (error of incomeItem.amount().errors(); track error.kind) {
                 <span>{{ error.message }}</span>
                 }
             </div>
             }
 
-            <label class="label mt-3">How Often Do You Get This Paycheck? <span class="required">*</span></label>
-            <select [ngClass]="{ 'input-error': paycheck.cadence().invalid() && paycheck.cadence().touched() }"
-                class="select" [formField]="paycheck.cadence">
+            <label class="label mt-3">How Often Do You Get This Income? <span class="required">*</span></label>
+            <select [ngClass]="{ 'input-error': incomeItem.cadence().invalid() && incomeItem.cadence().touched() }"
+                class="select" [formField]="incomeItem.cadence">
                 @for (option of cadenceOptions; track option.value) {
                 <option value="{{ option.value }}">{{ option.label }}</option>
                 }
             </select>
-            @if (paycheck.cadence().invalid() && paycheck.cadence().touched()) {
+            @if (incomeItem.cadence().invalid() && incomeItem.cadence().touched()) {
             <div class="text-red-600">
-                @for (error of paycheck.cadence().errors(); track error.kind) {
+                @for (error of incomeItem.cadence().errors(); track error.kind) {
                 <span>{{ error.message }}</span>
                 }
             </div>
             }
 
-            <label class="label mt-3">Day of Month To Receive This Paycheck <span class="required">*</span></label>
-            <input [ngClass]="{ 'input-error': paycheck.dayOfMonth().invalid() && paycheck.dayOfMonth().touched() }"
-                type="number" [formField]="paycheck.dayOfMonth" class="input"
+            <label class="label mt-3">Day of Month To Receive This Income <span class="required">*</span></label>
+            <input [ngClass]="{ 'input-error': incomeItem.dayOfMonth().invalid() && incomeItem.dayOfMonth().touched() }"
+                type="number" [formField]="incomeItem.dayOfMonth" class="input"
                 placeholder="Type a number between 1 to 31" title="Must be between be 1 to 31" />
-            @if (paycheck.dayOfMonth().invalid() && paycheck.dayOfMonth().touched()) {
+            @if (incomeItem.dayOfMonth().invalid() && incomeItem.dayOfMonth().touched()) {
             <div class="text-red-600">
-                @for (error of paycheck.dayOfMonth().errors(); track error.kind) {
+                @for (error of incomeItem.dayOfMonth().errors(); track error.kind) {
                 <span>{{ error.message }}</span>
                 }
             </div>
             }
         </div>
         }
-        <button class="btn btn-sm btn-primary btn-outline mt-1" (click)="addPaycheck()">+ Add Paycheck</button>
+        <button class="btn btn-sm btn-primary btn-outline mt-1" (click)="addIncomeItem()">+ Add Income</button>
     </fieldset>
 
 
@@ -90,12 +90,12 @@
 
         <div class="stat">
             <div class="stat-title">Income From Paychecks</div>
-            <div class="stat-value text-success"> {{ totalPaycheckAmount() | currency }} </div>
+            <div class="stat-value text-success"> {{ totalIncomeAmount() | currency }} </div>
         </div>
     </div>
     <div>
         <button class="btn btn-primary mt-4.5" (click)="onSave()" [ngClass]="{ 'btn-disabled': this.isSaving() }"
-            [disabled]="!this.inflowForm.cashOnHand().valid() || !this.inflowForm.paychecks().valid()">Save
+            [disabled]="!this.inflowForm.cashOnHand().valid() || !this.inflowForm.income().valid()">Save
             Inflows</button>
     </div>
 </div>
