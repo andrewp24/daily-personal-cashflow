@@ -22,7 +22,7 @@ export class Inflows {
   saveSuccessMessage = signal<string | null>(null);
   inflowModel = signal<InflowData>({
     cashOnHand: "",
-    paychecks: [{ amount: "", cadence: "", dayOfMonth: 1 }],
+    paychecks: [{ name: "", amount: "", cadence: "", dayOfMonth: 1 }],
   });
 
   cadenceOptions = [
@@ -57,7 +57,7 @@ export class Inflows {
       ...model,
       paychecks: [
         ...model.paychecks,
-        { amount: "", cadence: "", dayOfMonth: 1 },
+        { name: "", amount: "", cadence: "", dayOfMonth: 1 },
       ],
     }));
   }

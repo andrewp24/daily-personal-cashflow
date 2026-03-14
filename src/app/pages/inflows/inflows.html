@@ -26,6 +26,18 @@
                 }
             </div>
 
+            <label class="label">Paycheck Name <span class="required">*</span></label>
+            <input class="input" (blur)="onPaycheckAmountBlur($index)"
+                [ngClass]="{ 'input-error': paycheck.name().invalid() && paycheck.name().touched() }" type="text"
+                [formField]="paycheck.name" placeholder="Paycheck Name" />
+            @if (paycheck.name().invalid() && paycheck.name().touched()) {
+            <div class="text-red-600">
+                @for (error of paycheck.name().errors(); track error.kind) {
+                <span>{{ error.message }}</span>
+                }
+            </div>
+            }
+
             <label class="label">Paycheck Amount <span class="required">*</span></label>
             <input class="input" (blur)="onPaycheckAmountBlur($index)"
                 [ngClass]="{ 'input-error': paycheck.amount().invalid() && paycheck.amount().touched() }" type="text"
