@@ -1,5 +1,5 @@
 import { Component, signal, computed } from "@angular/core";
-import { InflowData, Income } from "./interfaces";
+import { InflowData } from "./interfaces";
 import {
   applyEach,
   form,
@@ -35,10 +35,10 @@ export class Inflows {
     required(schemaPath.cashOnHand, { message: "Cash on hand is required" });
     applyEach(schemaPath.income, (itemPath) => {
       required(itemPath.amount, {
-        message: "Paycheck amount is required",
+        message: "Income amount is required",
       });
       required(itemPath.dayOfMonth, {
-        message: "Paycheck day of month is required",
+        message: "Income day of month is required",
       });
       min(itemPath.dayOfMonth, 1, {
         message: "Day of month must be between 1 and 31",
