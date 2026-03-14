@@ -1,4 +1,4 @@
-import { Component, signal, computed } from "@angular/core";
+import { Component, signal, computed, inject } from "@angular/core";
 import { ExpenseData } from "./interfaces";
 import {
   applyEach,
@@ -9,6 +9,7 @@ import {
   required,
 } from "@angular/forms/signals";
 import { CurrencyPipe, NgClass } from "@angular/common";
+import { Calculator } from "../../services/calculator";
 
 @Component({
   selector: "app-outflows",
@@ -17,12 +18,15 @@ import { CurrencyPipe, NgClass } from "@angular/common";
   styleUrl: "./outflows.css",
 })
 export class Outflows {
+  private calculator = inject(Calculator);
   isSaving = signal(false);
   saveErrorMessage = signal<string | null>(null);
   saveSuccessMessage = signal<string | null>(null);
-  expenseModel = signal<ExpenseData>({
-    expenses: [{ name: "", amount: "", cadence: "", dayOfMonth: 1 }],
-  });
+  expenseModel = signal<ExpenseData>(
+    this.calculator.expenseData() ?? {
+      expenses: [{ name: "", amount: "", cadence: "", dayOfMonth: 1 }],
+    },
+  );
 
   cadenceOptions = [
     { label: "Weekly", value: "weekly" },
@@ -83,17 +87,10 @@ export class Outflows {
   totalExpenseAmount = computed(() => {
     let sum = 0;
     for (const expense of this.expenseForm.expenses) {
-      sum += this.parseMoney(expense.amount().value());
+      sum += this.calculator.parseMoney(expense.amount().value());
     }
     return sum;
   });
-
-  private parseMoney(value: string): number {
-    if (!value || value === ".") return 0;
-    const normalized = value.startsWith(".") ? `0${value}` : value;
-    const parsed = Number(normalized);
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
 
   normalizeMoneyInput(value: string): string {
     if (!value || value === ".") return "";
@@ -107,9 +104,7 @@ export class Outflows {
     try {
       this.isSaving.set(true);
       if (this.expenseForm.expenses().valid()) {
-        const expenseData = this.expenseForm.expenses().value();
-        console.log("Saving expense data:", expenseData);
-        // throw new Error("Simulated save error"); // Simulate an error for testing
+        this.calculator.setExpenseData(this.expenseModel());
       }
       this.saveSuccessMessage.set("Expenses saved successfully!");
     } catch (error) {

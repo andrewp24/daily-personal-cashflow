@@ -1,1 +1,43 @@
-<p>how-its-looking works!</p>
+@if (hasData()) {
+  <div class="chart-container">
+    <canvas
+      baseChart
+      [data]="chartConfig().data"
+      [options]="chartConfig().options"
+      type="bar"
+    ></canvas>
+  </div>
+
+  <div class="chart-legend">
+    <span class="legend-item">
+      <span class="legend-swatch legend-normal"></span> Daily Balance
+    </span>
+    <span class="legend-item">
+      <span class="legend-swatch legend-today"></span> Today
+    </span>
+    <span class="legend-item">
+      <span class="legend-swatch legend-negative"></span> Negative
+    </span>
+  </div>
+
+  <div class="summary">
+    <div class="summary-item">
+      <span class="summary-label">Starting Balance</span>
+      <span class="summary-value">{{ startingBalance() | currency }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Ending Balance</span>
+      <span class="summary-value">{{ endingBalance() | currency }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-label">Lowest Point</span>
+      <span class="summary-value" [class.negative]="lowestBalance() < 0">{{
+        lowestBalance() | currency
+      }}</span>
+    </div>
+  </div>
+} @else {
+  <div class="empty-state">
+    <p>Enter your inflows and outflows first to see your cashflow chart.</p>
+  </div>
+}

@@ -1,4 +1,4 @@
-import { Component, signal, computed } from "@angular/core";
+import { Component, signal, computed, inject } from "@angular/core";
 import { InflowData } from "./interfaces";
 import {
   applyEach,
@@ -9,6 +9,7 @@ import {
   required,
 } from "@angular/forms/signals";
 import { CurrencyPipe, NgClass } from "@angular/common";
+import { Calculator } from "../../services/calculator";
 
 @Component({
   selector: "app-inflows",
@@ -17,12 +18,19 @@ import { CurrencyPipe, NgClass } from "@angular/common";
   styleUrl: "./inflows.css",
 })
 export class Inflows {
+  private calculator = inject(Calculator);
   isSaving = signal(false);
   saveErrorMessage = signal<string | null>(null);
   saveSuccessMessage = signal<string | null>(null);
-  inflowModel = signal<InflowData>({
+  private todayString = new Date().toISOString().split("T")[0];
+  private defaultInflow: InflowData = {
     cashOnHand: "",
+    asOfDate: this.todayString,
     income: [{ name: "", amount: "", cadence: "", dayOfMonth: 1 }],
+  };
+  inflowModel = signal<InflowData>({
+    ...this.defaultInflow,
+    ...this.calculator.inflowData(),
   });
 
   cadenceOptions = [
@@ -33,6 +41,7 @@ export class Inflows {
 
   inflowForm = form(this.inflowModel, (schemaPath) => {
     required(schemaPath.cashOnHand, { message: "Cash on hand is required" });
+    required(schemaPath.asOfDate, { message: "As-of date is required" });
     applyEach(schemaPath.income, (itemPath) => {
       required(itemPath.amount, {
         message: "Income amount is required",
@@ -89,23 +98,16 @@ export class Inflows {
   }
 
   cashOnHandAmount = computed(() =>
-    this.parseMoney(this.inflowForm.cashOnHand().value()),
+    this.calculator.parseMoney(this.inflowForm.cashOnHand().value()),
   );
 
   totalIncomeAmount = computed(() => {
     let sum = 0;
     for (const income of this.inflowForm.income) {
-      sum += this.parseMoney(income.amount().value());
+      sum += this.calculator.parseMoney(income.amount().value());
     }
     return sum;
   });
-
-  private parseMoney(value: string): number {
-    if (!value || value === ".") return 0;
-    const normalized = value.startsWith(".") ? `0${value}` : value;
-    const parsed = Number(normalized);
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
 
   normalizeMoneyInput(value: string): string {
     if (!value || value === ".") return "";
@@ -120,13 +122,10 @@ export class Inflows {
       this.isSaving.set(true);
       if (
         this.inflowForm.cashOnHand().valid() &&
+        this.inflowForm.asOfDate().valid() &&
         this.inflowForm.income().valid()
       ) {
-        const cashData = this.inflowForm.cashOnHand().value();
-        const incomeData = this.inflowForm.income().value();
-        console.log("Saving inflow data:", cashData);
-        console.log("Saving income data:", incomeData);
-        // throw new Error("Simulated save error"); // Simulate an error for testing
+        this.calculator.setInflowData(this.inflowModel());
       }
       this.saveSuccessMessage.set("Inflows saved successfully!");
     } catch (error) {

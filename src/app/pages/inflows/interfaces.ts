@@ -7,5 +7,6 @@ export interface Income {
 
 export interface InflowData {
   cashOnHand: string;
+  asOfDate: string;
   income: Income[];
 }
