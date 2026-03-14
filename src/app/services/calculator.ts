@@ -2,10 +2,16 @@ import { Injectable, signal, computed } from "@angular/core";
 import { InflowData } from "../pages/inflows/interfaces";
 import { ExpenseData } from "../pages/outflows/interfaces";
 
+export interface CashflowEvent {
+  name: string;
+  amount: number;
+}
+
 export interface DailyCashflow {
   date: Date;
   label: string;
   balance: number;
+  events: CashflowEvent[];
 }
 
 const INFLOW_KEY = "pdc_inflows";
@@ -57,7 +63,13 @@ export class Calculator {
     let isFirstDay = true;
 
     while (current <= endDate) {
-      if (!isFirstDay) {
+      const events: CashflowEvent[] = [];
+
+      if (isFirstDay) {
+        if (cashOnHand > 0) {
+          events.push({ name: "Cash on hand", amount: cashOnHand });
+        }
+      } else {
         // Add income on matching days
         for (const income of inflows.income) {
           const amount = this.parseMoney(income.amount);
@@ -72,6 +84,7 @@ export class Calculator {
             )
           ) {
             balance += amount;
+            events.push({ name: income.name, amount });
           }
         }
 
@@ -90,6 +103,7 @@ export class Calculator {
               )
             ) {
               balance -= amount;
+              events.push({ name: expense.name, amount: -amount });
             }
           }
         }
@@ -104,6 +118,7 @@ export class Calculator {
         date: new Date(current),
         label,
         balance: Math.round(balance * 100) / 100,
+        events,
       });
 
       isFirstDay = false;

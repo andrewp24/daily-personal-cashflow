@@ -69,7 +69,18 @@ export class HowItsLooking {
             callbacks: {
               label: (ctx) => {
                 const val = ctx.parsed?.y ?? 0;
-                return `$${val.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                return `Balance: $${val.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+              },
+              afterBody: (items) => {
+                const idx = items[0]?.dataIndex;
+                if (idx == null) return [];
+                const events = cashflow[idx]?.events ?? [];
+                if (events.length === 0) return [];
+                return events.map((e) => {
+                  const sign = e.amount >= 0 ? "+" : "-";
+                  const abs = Math.abs(e.amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                  return `  ${sign} ${e.name}: $${abs}`;
+                });
               },
             },
           },
