@@ -1,4 +1,4 @@
-import { Component, computed, inject } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { BaseChartDirective } from "ng2-charts";
 import { Chart, ChartConfiguration } from "chart.js";
 import annotationPlugin from "chartjs-plugin-annotation";
@@ -43,6 +43,18 @@ export class HowItsLooking {
         amount: e.amount,
       })),
     );
+  });
+
+  pageSize = 10;
+  currentPage = signal(0);
+
+  totalPages = computed(() =>
+    Math.ceil(this.tableEvents().length / this.pageSize),
+  );
+
+  paginatedEvents = computed(() => {
+    const start = this.currentPage() * this.pageSize;
+    return this.tableEvents().slice(start, start + this.pageSize);
   });
 
   chartConfig = computed<ChartConfiguration<"bar">>(() => {
@@ -106,7 +118,10 @@ export class HowItsLooking {
                 if (events.length === 0) return [];
                 return events.map((e) => {
                   const sign = e.amount >= 0 ? "+" : "-";
-                  const abs = Math.abs(e.amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                  const abs = Math.abs(e.amount).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  });
                   return `  ${sign} ${e.name}: $${abs}`;
                 });
               },

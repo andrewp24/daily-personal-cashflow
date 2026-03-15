@@ -77,16 +77,30 @@
             </div>
             }
 
-            <label class="label mt-3">Day of Month To Receive This Income <span class="required">*</span></label>
-            <input [ngClass]="{ 'input-error': incomeItem.dayOfMonth().invalid() && incomeItem.dayOfMonth().touched() }"
-                type="number" [formField]="incomeItem.dayOfMonth" class="input"
-                placeholder="Type a number between 1 to 31" title="Must be between be 1 to 31" />
-            @if (incomeItem.dayOfMonth().invalid() && incomeItem.dayOfMonth().touched()) {
+            @if (incomeItem.cadence().value() === 'weekly' || incomeItem.cadence().value() === 'biweekly' ||
+            incomeItem.cadence().value() === 'monthly') {
+            <label class="label mt-3">Day of Month <span class="required">*</span></label>
+            <input type="number" [formField]="incomeItem.dayOfMonth" class="input"
+                placeholder="Type a number between 1 to 31" title="Must be between 1 to 31" />
+            }
+
+            @if (incomeItem.cadence().value() === 'once') {
+            <label class="label mt-3">Date of Expense <span class="required">*</span></label>
+            <input type="date" [formField]="incomeItem.oneTimeDate" class="input" />
+            }
+
+            @if (incomeItem.cadence().value() === 'fixed-days') {
+            <label class="label mt-3">Days of Month <span class="required">*</span></label>
+            <input type="text" [formField]="incomeItem.daysOfMonth" class="input"
+                [ngClass]="{ 'input-error': incomeItem.daysOfMonth().invalid() && incomeItem.daysOfMonth().touched() }"
+                placeholder="e.g. 7, 22" />
+            @if (incomeItem.daysOfMonth().invalid() && incomeItem.daysOfMonth().touched()) {
             <div class="text-red-600">
-                @for (error of incomeItem.dayOfMonth().errors(); track error.kind) {
+                @for (error of incomeItem.daysOfMonth().errors(); track error.kind) {
                 <span>{{ error.message }}</span>
                 }
             </div>
+            }
             }
         </div>
         }

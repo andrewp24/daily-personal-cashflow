@@ -76,12 +76,11 @@ export class Calculator {
           if (amount <= 0 || !income.cadence) continue;
 
           if (
-            this.occursOnDate(
-              current,
-              income.dayOfMonth,
-              income.cadence,
-              startDate,
-            )
+            this.occursOnDate(current, income.cadence, startDate, {
+              dayOfMonth: income.dayOfMonth,
+              oneTimeDate: income.oneTimeDate,
+              daysOfMonth: income.daysOfMonth,
+            })
           ) {
             balance += amount;
             events.push({ name: income.name, amount });
@@ -95,12 +94,11 @@ export class Calculator {
             if (amount <= 0 || !expense.cadence) continue;
 
             if (
-              this.occursOnDate(
-                current,
-                expense.dayOfMonth,
-                expense.cadence,
-                startDate,
-              )
+              this.occursOnDate(current, expense.cadence, startDate, {
+                dayOfMonth: expense.dayOfMonth,
+                oneTimeDate: expense.oneTimeDate,
+                daysOfMonth: expense.daysOfMonth,
+              })
             ) {
               balance -= amount;
               events.push({ name: expense.name, amount: -amount });
@@ -144,10 +142,42 @@ export class Calculator {
 
   private occursOnDate(
     date: Date,
-    dayOfMonth: number,
     cadence: string,
     startDate: Date,
+    opts: {
+      dayOfMonth: number;
+      oneTimeDate?: string;
+      daysOfMonth?: string;
+    },
   ): boolean {
+    if (cadence === "once") {
+      if (!opts.oneTimeDate) return false;
+      const [y, m, d] = opts.oneTimeDate.split("-").map(Number);
+      return (
+        date.getFullYear() === y &&
+        date.getMonth() === m - 1 &&
+        date.getDate() === d
+      );
+    }
+
+    if (cadence === "fixed-days") {
+      if (!opts.daysOfMonth) return false;
+      const days = opts.daysOfMonth
+        .split(",")
+        .map((s) => parseInt(s.trim(), 10))
+        .filter((n) => !isNaN(n));
+      const lastDay = new Date(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        0,
+      ).getDate();
+      return days.some(
+        (day) => date.getDate() === Math.min(day, lastDay),
+      );
+    }
+
+    const { dayOfMonth } = opts;
+
     if (cadence === "monthly") {
       const lastDay = new Date(
         date.getFullYear(),

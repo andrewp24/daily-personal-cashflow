@@ -4,8 +4,7 @@ import {
   applyEach,
   form,
   FormField,
-  max,
-  min,
+  pattern,
   required,
 } from "@angular/forms/signals";
 import { CurrencyPipe, NgClass } from "@angular/common";
@@ -26,7 +25,16 @@ export class Inflows {
   private defaultInflow: InflowData = {
     cashOnHand: "",
     asOfDate: this.todayString,
-    income: [{ name: "", amount: "", cadence: "", dayOfMonth: 1 }],
+    income: [
+      {
+        name: "",
+        amount: "",
+        cadence: "",
+        dayOfMonth: 1,
+        oneTimeDate: "",
+        daysOfMonth: "",
+      },
+    ],
   };
   inflowModel = signal<InflowData>({
     ...this.defaultInflow,
@@ -37,6 +45,8 @@ export class Inflows {
     { label: "Weekly", value: "weekly" },
     { label: "Bi-Weekly", value: "biweekly" },
     { label: "Monthly", value: "monthly" },
+    { label: "One Time", value: "once" },
+    { label: "Fixed Days", value: "fixed-days" },
   ];
 
   inflowForm = form(this.inflowModel, (schemaPath) => {
@@ -46,17 +56,11 @@ export class Inflows {
       required(itemPath.amount, {
         message: "Income amount is required",
       });
-      required(itemPath.dayOfMonth, {
-        message: "Income day of month is required",
-      });
-      min(itemPath.dayOfMonth, 1, {
-        message: "Day of month must be between 1 and 31",
-      });
-      max(itemPath.dayOfMonth, 31, {
-        message: "Day of month must be between 1 and 31",
-      });
       required(itemPath.cadence, {
         message: "Income cadence is required",
+      });
+      pattern(itemPath.daysOfMonth, /^([1-9]|[12]\d|3[01])(,\s?([1-9]|[12]\d|3[01]))*$/, {
+        message: "Enter days 1–31 separated by commas (e.g. 7, 22)",
       });
     });
   });
@@ -66,7 +70,14 @@ export class Inflows {
       ...model,
       income: [
         ...model.income,
-        { name: "", amount: "", cadence: "", dayOfMonth: 1 },
+        {
+          name: "",
+          amount: "",
+          cadence: "",
+          dayOfMonth: 1,
+          oneTimeDate: "",
+          daysOfMonth: "",
+        },
       ],
     }));
   }

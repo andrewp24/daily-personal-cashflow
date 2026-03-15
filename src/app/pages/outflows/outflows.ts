@@ -4,8 +4,7 @@ import {
   applyEach,
   form,
   FormField,
-  max,
-  min,
+  pattern,
   required,
 } from "@angular/forms/signals";
 import { CurrencyPipe, NgClass } from "@angular/common";
@@ -24,7 +23,16 @@ export class Outflows {
   saveSuccessMessage = signal<string | null>(null);
   expenseModel = signal<ExpenseData>(
     this.calculator.expenseData() ?? {
-      expenses: [{ name: "", amount: "", cadence: "", dayOfMonth: 1 }],
+      expenses: [
+        {
+          name: "",
+          amount: "",
+          cadence: "",
+          dayOfMonth: 1,
+          oneTimeDate: "",
+          daysOfMonth: "",
+        },
+      ],
     },
   );
 
@@ -32,6 +40,8 @@ export class Outflows {
     { label: "Weekly", value: "weekly" },
     { label: "Bi-Weekly", value: "biweekly" },
     { label: "Monthly", value: "monthly" },
+    { label: "One Time", value: "once" },
+    { label: "Fixed Days", value: "fixed-days" },
   ];
 
   expenseForm = form(this.expenseModel, (schemaPath) => {
@@ -40,17 +50,11 @@ export class Outflows {
       required(itemPath.amount, {
         message: "Expense amount is required",
       });
-      required(itemPath.dayOfMonth, {
-        message: "Expense day of month is required",
-      });
-      min(itemPath.dayOfMonth, 1, {
-        message: "Day of month must be between 1 and 31",
-      });
-      max(itemPath.dayOfMonth, 31, {
-        message: "Day of month must be between 1 and 31",
-      });
       required(itemPath.cadence, {
         message: "Expense cadence is required",
+      });
+      pattern(itemPath.daysOfMonth, /^([1-9]|[12]\d|3[01])(,\s?([1-9]|[12]\d|3[01]))*$/, {
+        message: "Enter days 1–31 separated by commas (e.g. 7, 22)",
       });
     });
   });
@@ -60,7 +64,14 @@ export class Outflows {
       ...model,
       expenses: [
         ...model.expenses,
-        { name: "", amount: "", cadence: "", dayOfMonth: 1 },
+        {
+          name: "",
+          amount: "",
+          cadence: "",
+          dayOfMonth: 1,
+          oneTimeDate: "",
+          daysOfMonth: "",
+        },
       ],
     }));
   }

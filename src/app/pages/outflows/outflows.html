@@ -51,17 +51,30 @@
             </div>
             }
 
-            <label class="label mt-3">Day of Month To Receive This Expense <span class="required">*</span></label>
-            <input
-                [ngClass]="{ 'input-error': expenseItem.dayOfMonth().invalid() && expenseItem.dayOfMonth().touched() }"
-                type="number" [formField]="expenseItem.dayOfMonth" class="input"
-                placeholder="Type a number between 1 to 31" title="Must be between be 1 to 31" />
-            @if (expenseItem.dayOfMonth().invalid() && expenseItem.dayOfMonth().touched()) {
+            @if (expenseItem.cadence().value() === 'weekly' || expenseItem.cadence().value() === 'biweekly' ||
+            expenseItem.cadence().value() === 'monthly') {
+            <label class="label mt-3">Day of Month <span class="required">*</span></label>
+            <input type="number" [formField]="expenseItem.dayOfMonth" class="input"
+                placeholder="Type a number between 1 to 31" title="Must be between 1 to 31" />
+            }
+
+            @if (expenseItem.cadence().value() === 'once') {
+            <label class="label mt-3">Date of Expence <span class="required">*</span></label>
+            <input type="date" [formField]="expenseItem.oneTimeDate" class="input" />
+            }
+
+            @if (expenseItem.cadence().value() === 'fixed-days') {
+            <label class="label mt-3">Days of Month <span class="required">*</span></label>
+            <input type="text" [formField]="expenseItem.daysOfMonth" class="input"
+                [ngClass]="{ 'input-error': expenseItem.daysOfMonth().invalid() && expenseItem.daysOfMonth().touched() }"
+                placeholder="e.g. 7, 22" />
+            @if (expenseItem.daysOfMonth().invalid() && expenseItem.daysOfMonth().touched()) {
             <div class="text-red-600">
-                @for (error of expenseItem.dayOfMonth().errors(); track error.kind) {
+                @for (error of expenseItem.daysOfMonth().errors(); track error.kind) {
                 <span>{{ error.message }}</span>
                 }
             </div>
+            }
             }
         </div>
         }

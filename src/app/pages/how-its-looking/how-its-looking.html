@@ -50,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (event of tableEvents(); track $index) {
+        @for (event of paginatedEvents(); track $index) {
           <tr>
             <td>{{ event.date }}</td>
             <td>{{ event.name }}</td>
@@ -61,6 +61,11 @@
         }
       </tbody>
     </table>
+    <div class="join flex justify-center my-3">
+      <button class="join-item btn btn-sm" [disabled]="currentPage() === 0" (click)="currentPage.set(currentPage() - 1)">«</button>
+      <button class="join-item btn btn-sm">Page {{ currentPage() + 1 }} of {{ totalPages() }}</button>
+      <button class="join-item btn btn-sm" [disabled]="currentPage() >= totalPages() - 1" (click)="currentPage.set(currentPage() + 1)">»</button>
+    </div>
   </div>
 } @else {
   <div class="empty-state">
