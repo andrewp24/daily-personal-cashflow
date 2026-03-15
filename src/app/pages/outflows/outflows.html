@@ -1,5 +1,4 @@
-<div class="flex flex-col gap-4 ms-5">
-
+<div class="flex flex-col gap-4 mx-5 mb-5">
     <div class="flex items-center gap-4 mt-3">
         <div class="stats bg-base-100 border-base-300 border">
             <div class="stat">
@@ -10,7 +9,6 @@
         <button class="btn btn-primary" (click)="onSave()" [ngClass]="{ 'btn-disabled': this.isSaving() }"
             [disabled]="!this.expenseForm.expenses().valid()">Save Expenses</button>
     </div>
-
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
         <legend class="fieldset-legend">Current Expenses</legend>
 

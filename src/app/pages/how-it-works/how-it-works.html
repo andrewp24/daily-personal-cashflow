@@ -1,1 +1,72 @@
-<p>how-it-works works!</p>
+<div class="hero bg-base-100 min-h-screen">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+        <div>
+            <h1 class="text-5xl font-bold">Step 1: Adding Inflows (Income)</h1>
+            <ul class="pt-6 steps steps-horizontal lg:steps-horizontal">
+                <li class="step step-accent">Add Inflows</li>
+                <li class="step">Add Outflows</li>
+                <li class="step">Look at How It's Going</li>
+            </ul>
+            <p class="py-6">
+                This is your first stop. You will be adding The amount you have In your bank account on the left-most
+                input area. You will be asked to also put in a date for the "As Of" date. This is when the charts and
+                calculations will be based on.
+            </p>
+            <p class="pb-6">After you add in how much cash you have, you can go to the "Current Inflows" section to add
+                your incomes. If you have two jobs, you can name each income something like: job 1 paycheck and job 2
+                paycheck. You can choose how often you get each paycheck as well. If you have a paycheck that comes on
+                specific days of the month, you can choose "Fixed Days" which will give the ability to add specific days
+                of the month that you can add (such as 7,22 which will have the paycheck come in on the 7th day of the
+                month and the 22nd).
+            </p>
+            <button routerLink="/inflows" class="btn btn-accent">Go to Inflows</button>
+        </div>
+
+    </div>
+</div>
+<div class="hero bg-base-200 min-h-screen">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+        <div>
+            <h1 class="text-5xl font-bold">Step 2: Adding Outflows (Expenses)</h1>
+            <ul class="pt-6 steps steps-horizontal lg:steps-horizontal">
+                <li class="step step-accent">Add Inflows</li>
+                <li class="step step-accent">Add Outflows</li>
+                <li class="step">Look at How It's Going</li>
+            </ul>
+            <p class="py-6">
+                You'll be seeing red now. This step just has you entering different expenses you have and when they will
+                occur. Just like in the Inflows section, there is an area where you can add the name, amount, date, and
+                frequency of expenses. You can keep adding as many as you need.
+            </p>
+            <p class="pb-6">After you're satisfied (or whenever you would like!) you can save the expenses you have
+                assuming they are properly inputted (we have some validation making sure the forms are filled out).
+            </p>
+            <button routerLink="/outflows" class="btn btn-accent">Go to Outflows</button>
+        </div>
+    </div>
+</div>
+<div class="hero bg-base-300 min-h-screen">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+        <div>
+            <h1 class="text-5xl font-bold">Step 3: How It's Looking (Results/Charts)</h1>
+            <ul class="pt-6 steps steps-horizontal lg:steps-horizontal">
+                <li class="step step-accent">Add Inflows</li>
+                <li class="step step-accent">Add Outflows</li>
+                <li class="step step-accent">Look at How It's Going</li>
+            </ul>
+            <p class="py-6">
+                This is (hopefully) the fun part. You get to look at a couple charts and tables to see the results from
+                the previous two steps. The first one you'll see is the bar chart. This shows you the forecasted cash on
+                hand for each day for the next 3 months. The first day on the chart was what was entered on the Inflows
+                page in the "As Of" field. Update that to get an updated view of things.
+            </p>
+            <p class="pb-6">There is a dotted red line at the $500 level on the y axis. This is just a danger zone that
+                can show you that your cash on hand level is getting near 0.
+            </p>
+            <p class="pb-6">If you scroll down, you'll notice a table with each of the income/expenses that you entered
+                with how much they are for and when they occurred or will occur.
+            </p>
+            <button routerLink="/how-its-looking" class="btn btn-accent">Go to How It's Going</button>
+        </div>
+    </div>
+</div>
