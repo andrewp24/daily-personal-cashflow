@@ -1,98 +1,104 @@
-<div class="flex items-start gap-4 ms-5">
+<div class="flex flex-col gap-4 ms-5">
 
-    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+    <div class="flex items-center gap-4 mt-3">
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-title">Total Monthly Expenses</div>
+                <div class="stat-value text-error"> {{ totalExpenseAmount() | currency }} </div>
+            </div>
+        </div>
+        <button class="btn btn-primary" (click)="onSave()" [ngClass]="{ 'btn-disabled': this.isSaving() }"
+            [disabled]="!this.expenseForm.expenses().valid()">Save Expenses</button>
+    </div>
+
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
         <legend class="fieldset-legend">Current Expenses</legend>
 
-        @for (expenseItem of expenseForm.expenses; track $index) {
-        <div class="border-base-300 rounded-box border p-3 mb-3">
-            <div class="flex justify-between items-center mb-2">
-                <span class="font-semibold text-sm">Expense Item {{ $index + 1 }}</span>
-                @if (expenseForm.expenses.length > 1) {
-                <button class="btn btn-xs btn-error btn-outline" (click)="removeExpenseItem($index)">Remove</button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            @for (expenseItem of expenseForm.expenses; track $index) {
+            <div class="border-base-300 rounded-box border p-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-semibold text-sm">Expense Item {{ $index + 1 }}</span>
+                    @if (expenseForm.expenses.length > 1) {
+                    <button class="btn btn-xs btn-error btn-outline" (click)="removeExpenseItem($index)">Remove</button>
+                    }
+                </div>
+
+                <label class="label">Expense Name <span class="required">*</span></label>
+                <input class="input" (blur)="onExpenseAmountBlur($index)"
+                    [ngClass]="{ 'input-error': expenseItem.name().invalid() && expenseItem.name().touched() }"
+                    type="text" [formField]="expenseItem.name" placeholder="Expense Name" />
+                @if (expenseItem.name().invalid() && expenseItem.name().touched()) {
+                <div class="text-red-600">
+                    @for (error of expenseItem.name().errors(); track error.kind) {
+                    <span>{{ error.message }}</span>
+                    }
+                </div>
+                }
+
+                <label class="label">Expense Amount <span class="required">*</span></label>
+                <input class="input" (blur)="onExpenseAmountBlur($index)"
+                    [ngClass]="{ 'input-error': expenseItem.amount().invalid() && expenseItem.amount().touched() }"
+                    type="text" [formField]="expenseItem.amount" placeholder="1000.00" inputmode="decimal" />
+                @if (expenseItem.amount().invalid() && expenseItem.amount().touched()) {
+                <div class="text-red-600">
+                    @for (error of expenseItem.amount().errors(); track error.kind) {
+                    <span>{{ error.message }}</span>
+                    }
+                </div>
+                }
+
+                <label class="label mt-3">How Often Do You Get This Expense? <span class="required">*</span></label>
+                <select
+                    [ngClass]="{ 'input-error': expenseItem.cadence().invalid() && expenseItem.cadence().touched() }"
+                    class="select" [formField]="expenseItem.cadence">
+                    @for (option of cadenceOptions; track option.value) {
+                    <option value="{{ option.value }}">{{ option.label }}</option>
+                    }
+                </select>
+                @if (expenseItem.cadence().invalid() && expenseItem.cadence().touched()) {
+                <div class="text-red-600">
+                    @for (error of expenseItem.cadence().errors(); track error.kind) {
+                    <span>{{ error.message }}</span>
+                    }
+                </div>
+                }
+
+                @if (expenseItem.cadence().value() === 'weekly' || expenseItem.cadence().value() === 'biweekly' ||
+                expenseItem.cadence().value() === 'monthly') {
+                <label class="label mt-3">Day of Month <span class="required">*</span></label>
+                <input type="number" [formField]="expenseItem.dayOfMonth" class="input"
+                    placeholder="Type a number between 1 to 31" title="Must be between 1 to 31" />
+                }
+
+                @if (expenseItem.cadence().value() === 'once') {
+                <label class="label mt-3">Date of Expence <span class="required">*</span></label>
+                <input type="date" [formField]="expenseItem.oneTimeDate" class="input" />
+                }
+
+                @if (expenseItem.cadence().value() === 'fixed-days') {
+                <label class="label mt-3">Days of Month <span class="required">*</span></label>
+                <input type="text" [formField]="expenseItem.daysOfMonth" class="input"
+                    [ngClass]="{ 'input-error': expenseItem.daysOfMonth().invalid() && expenseItem.daysOfMonth().touched() }"
+                    placeholder="e.g. 7, 22" />
+                @if (expenseItem.daysOfMonth().invalid() && expenseItem.daysOfMonth().touched()) {
+                <div class="text-red-600">
+                    @for (error of expenseItem.daysOfMonth().errors(); track error.kind) {
+                    <span>{{ error.message }}</span>
+                    }
+                </div>
+                }
                 }
             </div>
-
-            <label class="label">Expense Name <span class="required">*</span></label>
-            <input class="input" (blur)="onExpenseAmountBlur($index)"
-                [ngClass]="{ 'input-error': expenseItem.name().invalid() && expenseItem.name().touched() }" type="text"
-                [formField]="expenseItem.name" placeholder="Expense Name" />
-            @if (expenseItem.name().invalid() && expenseItem.name().touched()) {
-            <div class="text-red-600">
-                @for (error of expenseItem.name().errors(); track error.kind) {
-                <span>{{ error.message }}</span>
-                }
-            </div>
-            }
-
-            <label class="label">Expense Amount <span class="required">*</span></label>
-            <input class="input" (blur)="onExpenseAmountBlur($index)"
-                [ngClass]="{ 'input-error': expenseItem.amount().invalid() && expenseItem.amount().touched() }"
-                type="text" [formField]="expenseItem.amount" placeholder="1000.00" inputmode="decimal" />
-            @if (expenseItem.amount().invalid() && expenseItem.amount().touched()) {
-            <div class="text-red-600">
-                @for (error of expenseItem.amount().errors(); track error.kind) {
-                <span>{{ error.message }}</span>
-                }
-            </div>
-            }
-
-            <label class="label mt-3">How Often Do You Get This Expense? <span class="required">*</span></label>
-            <select [ngClass]="{ 'input-error': expenseItem.cadence().invalid() && expenseItem.cadence().touched() }"
-                class="select" [formField]="expenseItem.cadence">
-                @for (option of cadenceOptions; track option.value) {
-                <option value="{{ option.value }}">{{ option.label }}</option>
-                }
-            </select>
-            @if (expenseItem.cadence().invalid() && expenseItem.cadence().touched()) {
-            <div class="text-red-600">
-                @for (error of expenseItem.cadence().errors(); track error.kind) {
-                <span>{{ error.message }}</span>
-                }
-            </div>
-            }
-
-            @if (expenseItem.cadence().value() === 'weekly' || expenseItem.cadence().value() === 'biweekly' ||
-            expenseItem.cadence().value() === 'monthly') {
-            <label class="label mt-3">Day of Month <span class="required">*</span></label>
-            <input type="number" [formField]="expenseItem.dayOfMonth" class="input"
-                placeholder="Type a number between 1 to 31" title="Must be between 1 to 31" />
-            }
-
-            @if (expenseItem.cadence().value() === 'once') {
-            <label class="label mt-3">Date of Expence <span class="required">*</span></label>
-            <input type="date" [formField]="expenseItem.oneTimeDate" class="input" />
-            }
-
-            @if (expenseItem.cadence().value() === 'fixed-days') {
-            <label class="label mt-3">Days of Month <span class="required">*</span></label>
-            <input type="text" [formField]="expenseItem.daysOfMonth" class="input"
-                [ngClass]="{ 'input-error': expenseItem.daysOfMonth().invalid() && expenseItem.daysOfMonth().touched() }"
-                placeholder="e.g. 7, 22" />
-            @if (expenseItem.daysOfMonth().invalid() && expenseItem.daysOfMonth().touched()) {
-            <div class="text-red-600">
-                @for (error of expenseItem.daysOfMonth().errors(); track error.kind) {
-                <span>{{ error.message }}</span>
-                }
-            </div>
-            }
             }
         </div>
-        }
-        <button class="btn btn-sm btn-primary btn-outline mt-1" (click)="addExpenseItem()">+ Add Expense</button>
+        <div class="flex gap-2 mt-1">
+            <button class="btn btn-sm btn-primary btn-outline" (click)="addExpenseItem()">+ Add Expense</button>
+            <button class="btn btn-sm btn-primary" (click)="onSave()" [ngClass]="{ 'btn-disabled': this.isSaving() }"
+                [disabled]="!this.expenseForm.expenses().valid()">Save Expenses</button>
+        </div>
     </fieldset>
 
-
-    <div class="stats bg-base-100 border-base-300 border mt-4">
-        <div class="stat">
-            <div class="stat-title">Total Monthly Expenses</div>
-            <div class="stat-value text-error"> {{ totalExpenseAmount() | currency }} </div>
-        </div>
-    </div>
-    <div>
-        <button class="btn btn-primary mt-4.5" (click)="onSave()" [ngClass]="{ 'btn-disabled': this.isSaving() }"
-            [disabled]="!this.expenseForm.expenses().valid()">Save
-            Expenses</button>
-    </div>
 </div>
 
 @if (this.saveErrorMessage()) {
