@@ -35,6 +35,10 @@
   box-sizing: border-box;
 }
 
+.legend-danger {
+  background-color: #f87171;
+}
+
 .legend-negative {
   background-color: #ef4444;
 }
