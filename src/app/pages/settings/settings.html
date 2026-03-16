@@ -1,0 +1,42 @@
+<div class="flex items-start gap-4 ms-5">
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+        <legend class="fieldset-legend">Export</legend>
+        <button class="btn btn-dash btn-primary" (click)="exportOutflowsInflows()">Export Outflows & Inflows</button>
+    </fieldset>
+</div>
+
+<div class="flex items-start gap-4 ms-5">
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+        <legend class="fieldset-legend">Import</legend>
+        <button class="btn btn-dash btn-accent" (click)="importOutflowsInflows()">Import Outflows & Inflows</button>
+    </fieldset>
+</div>
+
+@if (this.exportSuccess()) {
+<div class="toast toast-center">
+    <div class="alert alert-success">
+        <span>{{ this.exportSuccess() }}</span>
+    </div>
+</div>
+}
+@if (this.exportFailure()) {
+<div class="toast toast-center">
+    <div class="alert alert-error">
+        <span>{{ this.exportFailure() }}</span>
+    </div>
+</div>
+}
+@if (this.importSuccess()) {
+<div class="toast toast-center">
+    <div class="alert alert-success">
+        <span>{{ this.importSuccess() }}</span>
+    </div>
+</div>
+}
+@if (this.importFailure()) {
+<div class="toast toast-center">
+    <div class="alert alert-error">
+        <span>{{ this.importFailure() }}</span>
+    </div>
+</div>
+}

@@ -5,6 +5,7 @@ import { Outflows } from "./pages/outflows/outflows";
 import { HowItsLooking } from "./pages/how-its-looking/how-its-looking";
 import { About } from "./pages/about/about";
 import { HowItWorks } from "./pages/how-it-works/how-it-works";
+import { Settings } from "./pages/settings/settings";
 
 export const routes: Routes = [
   { path: "", component: Home },
@@ -13,4 +14,5 @@ export const routes: Routes = [
   { path: "how-its-looking", component: HowItsLooking },
   { path: "about", component: About },
   { path: "how-it-works", component: HowItWorks },
+  { path: "settings", component: Settings },
 ];
