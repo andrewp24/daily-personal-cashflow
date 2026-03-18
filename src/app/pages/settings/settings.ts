@@ -54,9 +54,9 @@ export class Settings implements OnDestroy {
       const data = JSON.parse(atob(padded));
       console.log(data);
       if (data.inflow_data)
-        localStorage.setItem("inflow_data", data.inflow_data);
+        localStorage.setItem("pdc_inflows", data.inflow_data);
       if (data.outflow_data)
-        localStorage.setItem("outflow_data", data.outflow_data);
+        localStorage.setItem("pdc_outflows", data.outflow_data);
       this.importSuccess.set("Successfully import data from clipboard.");
       return "success";
     } catch (error) {
