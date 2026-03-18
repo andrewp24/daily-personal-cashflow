@@ -1,5 +1,7 @@
 import { Component, OnDestroy, signal } from "@angular/core";
 
+declare const APP_VERSION: string;
+
 @Component({
   selector: "app-settings",
   imports: [],
@@ -7,6 +9,7 @@ import { Component, OnDestroy, signal } from "@angular/core";
   styleUrl: "./settings.css",
 })
 export class Settings implements OnDestroy {
+  appVersion = APP_VERSION;
   exportSuccess = signal<string | null>(null);
   exportFailure = signal<string | null>(null);
   importSuccess = signal<string | null>(null);
