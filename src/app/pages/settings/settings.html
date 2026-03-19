@@ -1,14 +1,23 @@
 <div class="flex items-start gap-4 ms-5">
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
         <legend class="fieldset-legend">Export</legend>
-        <button class="btn btn-dash btn-primary" (click)="exportOutflowsInflows()">Export Outflows & Inflows</button>
+        <button class="btn btn-dash btn-primary" (click)="exportOutflowsInflows()">Export Outflows & Inflows via
+            clipboard</button>
+        <button class="btn btn-dash btn-primary" (click)="exportToFile()">Export Outflows & Inflows via
+            JSON file</button>
     </fieldset>
 </div>
 
 <div class="flex items-start gap-4 ms-5">
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
         <legend class="fieldset-legend">Import</legend>
-        <button class="btn btn-dash btn-accent" (click)="importOutflowsInflows()">Import Outflows & Inflows</button>
+        <button class="btn btn-dash btn-accent" (click)="importOutflowsInflows()">Import Outflows & Inflows via
+            clipboard</button>
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Choose a Save File</legend>
+            <input type="file" class="file-input" accept=".json" (change)="importFromFile($event)" />
+            <label class="label">Only .json files</label>
+        </fieldset>
     </fieldset>
 </div>
 
@@ -30,6 +39,13 @@
 <div class="toast toast-center">
     <div class="alert alert-success">
         <span>{{ this.importSuccess() }}</span>
+    </div>
+</div>
+}
+@if (this.importWarning()) {
+<div class="toast toast-center">
+    <div class="alert alert-warning">
+        <span>{{ this.importWarning() }}</span>
     </div>
 </div>
 }
