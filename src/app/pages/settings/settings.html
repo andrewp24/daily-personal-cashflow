@@ -1,21 +1,18 @@
 <div class="flex items-start gap-4 ms-5">
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
         <legend class="fieldset-legend">Export</legend>
-        <button class="btn btn-dash btn-primary" (click)="exportOutflowsInflows()">Export Outflows & Inflows via
-            clipboard</button>
-        <button class="btn btn-dash btn-primary" (click)="exportToFile()">Export Outflows & Inflows via
+        <button class="btn btn-dash btn-accent" (click)="exportToFile()">Export Outflows & Inflows via
             JSON file</button>
+        <label class="label">Produces a .json file which can be imported below</label>
     </fieldset>
 </div>
 
 <div class="flex items-start gap-4 ms-5">
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
         <legend class="fieldset-legend">Import</legend>
-        <button class="btn btn-dash btn-accent" (click)="importOutflowsInflows()">Import Outflows & Inflows via
-            clipboard</button>
         <fieldset class="fieldset">
             <legend class="fieldset-legend">Choose a Save File</legend>
-            <input type="file" class="file-input" accept=".json" (change)="importFromFile($event)" />
+            <input type="file" class="file-input file-input-accent" accept=".json" (change)="importFromFile($event)" />
             <label class="label">Only .json files</label>
         </fieldset>
     </fieldset>
