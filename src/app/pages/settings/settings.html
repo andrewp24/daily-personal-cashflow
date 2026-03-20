@@ -18,6 +18,33 @@
     </fieldset>
 </div>
 
+<div class="flex items-start gap-4 ms-5">
+    <fieldset class="fieldset bg-base-200 border-red-900 rounded-box w-xs border p-4">
+        <legend class="fieldset-legend">Delete</legend>
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Delete Saved Data</legend>
+            <button class="btn btn-dash btn-error" onclick="delete_modal.showModal()">Delete Saved Data</button>
+            <label class="label">This will permanently delete all of your data.</label>
+        </fieldset>
+    </fieldset>
+</div>
+
+<dialog id="delete_modal" class="modal">
+    <div class="modal-box">
+        <h3 class="text-lg font-bold">Delete All Data</h3>
+        <p class="py-4">This will permanently delete all of your saved data (inflows, outflows, and theme). You cannot undo this unless you have exported your data.</p>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cancel</button>
+            </form>
+            <button class="btn btn-error" (click)="deleteData()">Delete</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
 @if (this.exportSuccess()) {
 <div class="toast toast-center">
     <div class="alert alert-success">

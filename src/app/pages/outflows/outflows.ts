@@ -8,7 +8,7 @@ import {
   required,
 } from "@angular/forms/signals";
 import { CurrencyPipe, NgClass } from "@angular/common";
-import { Calculator } from "../../services/calculator";
+import { CalculatorService } from "../../services/calculator";
 
 @Component({
   selector: "app-outflows",
@@ -17,7 +17,7 @@ import { Calculator } from "../../services/calculator";
   styleUrl: "./outflows.css",
 })
 export class Outflows {
-  private calculator = inject(Calculator);
+  private calculator = inject(CalculatorService);
   isSaving = signal(false);
   saveErrorMessage = signal<string | null>(null);
   saveSuccessMessage = signal<string | null>(null);
@@ -53,9 +53,13 @@ export class Outflows {
       required(itemPath.cadence, {
         message: "Expense cadence is required",
       });
-      pattern(itemPath.daysOfMonth, /^([1-9]|[12]\d|3[01])(,\s?([1-9]|[12]\d|3[01]))*$/, {
-        message: "Enter days 1–31 separated by commas (e.g. 7, 22)",
-      });
+      pattern(
+        itemPath.daysOfMonth,
+        /^([1-9]|[12]\d|3[01])(,\s?([1-9]|[12]\d|3[01]))*$/,
+        {
+          message: "Enter days 1–31 separated by commas (e.g. 7, 22)",
+        },
+      );
     });
   });
 

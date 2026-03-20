@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from "@angular/core";
 import { BaseChartDirective } from "ng2-charts";
 import { Chart, ChartConfiguration } from "chart.js";
 import annotationPlugin from "chartjs-plugin-annotation";
-import { Calculator } from "../../services/calculator";
+import { CalculatorService } from "../../services/calculator";
 import { CurrencyPipe } from "@angular/common";
 
 Chart.register(annotationPlugin);
@@ -14,7 +14,7 @@ Chart.register(annotationPlugin);
   styleUrl: "./how-its-looking.css",
 })
 export class HowItsLooking {
-  private calculator = inject(Calculator);
+  private calculator = inject(CalculatorService);
 
   hasData = computed(() => this.calculator.dailyCashflow().length > 0);
 

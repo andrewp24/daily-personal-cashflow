@@ -1,4 +1,6 @@
-import { Component, OnDestroy, signal } from "@angular/core";
+import { Component, inject, OnDestroy, signal } from "@angular/core";
+import { CalculatorService } from "../../services/calculator";
+import { ThemeService } from "../../services/theme";
 import { SaveFile } from "./interfaces";
 
 declare const APP_VERSION: string;
@@ -10,6 +12,8 @@ declare const APP_VERSION: string;
   styleUrl: "./settings.css",
 })
 export class Settings implements OnDestroy {
+  private calculator = inject(CalculatorService);
+  private theme = inject(ThemeService);
   appVersion = APP_VERSION;
   exportSuccess = signal<string | null>(null);
   exportFailure = signal<string | null>(null);
@@ -135,5 +139,15 @@ export class Settings implements OnDestroy {
       }, 3000);
     };
     reader.readAsText(file);
+  }
+
+  deleteData(): void {
+    localStorage.removeItem("pdc_inflows");
+    localStorage.removeItem("pdc_outflows");
+    localStorage.removeItem("pdc_theme");
+    this.calculator.inflowData.set(null);
+    this.calculator.expenseData.set(null);
+    this.theme.resetTheme();
+    (document.getElementById("delete_modal") as HTMLDialogElement).close();
   }
 }

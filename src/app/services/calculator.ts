@@ -20,7 +20,7 @@ const OUTFLOW_KEY = "pdc_outflows";
 @Injectable({
   providedIn: "root",
 })
-export class Calculator {
+export class CalculatorService {
   inflowData = signal<InflowData | null>(this.loadFromStorage(INFLOW_KEY));
   expenseData = signal<ExpenseData | null>(this.loadFromStorage(OUTFLOW_KEY));
 
@@ -171,9 +171,7 @@ export class Calculator {
         date.getMonth() + 1,
         0,
       ).getDate();
-      return days.some(
-        (day) => date.getDate() === Math.min(day, lastDay),
-      );
+      return days.some((day) => date.getDate() === Math.min(day, lastDay));
     }
 
     const { dayOfMonth } = opts;
