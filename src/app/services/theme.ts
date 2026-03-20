@@ -21,7 +21,7 @@ export class ThemeService {
     this.isLight.set(true);
   }
 
-  private loadStoredTheme() {
+  loadStoredTheme() {
     const theme = localStorage.getItem(THEME_KEY);
     if (theme === "dark") {
       this.isLight.set(false);

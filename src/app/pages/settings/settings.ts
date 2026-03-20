@@ -101,11 +101,18 @@ export class Settings implements OnDestroy {
 
         const data = parsed as SaveFile;
 
-        if (data.pdc_inflows)
+        if (data.pdc_inflows) {
           localStorage.setItem("pdc_inflows", data.pdc_inflows);
-        if (data.pdc_outflows)
+          this.calculator.inflowData.set(JSON.parse(data.pdc_inflows));
+        }
+        if (data.pdc_outflows) {
           localStorage.setItem("pdc_outflows", data.pdc_outflows);
-        if (data.pdc_theme) localStorage.setItem("pdc_theme", data.pdc_theme);
+          this.calculator.expenseData.set(JSON.parse(data.pdc_outflows));
+        }
+        if (data.pdc_theme) {
+          localStorage.setItem("pdc_theme", data.pdc_theme);
+          this.theme.loadStoredTheme();
+        }
 
         if (unknownKeys.length > 0) {
           this.importWarning.set(
