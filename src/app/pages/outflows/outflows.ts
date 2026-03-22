@@ -115,6 +115,28 @@ export class Outflows {
     return parsed.toFixed(2);
   }
 
+  sortExpenses(by: "cost" | "dayOfMonth") {
+    this.expenseModel.update((model) => ({
+      ...model,
+      expenses: [...model.expenses].sort((a, b) => {
+        if (by === "cost") {
+          return (
+            this.calculator.parseMoney(b.amount) -
+            this.calculator.parseMoney(a.amount)
+          );
+        }
+        const hasDay = (e: (typeof model.expenses)[0]) =>
+          e.cadence === "weekly" ||
+          e.cadence === "biweekly" ||
+          e.cadence === "monthly";
+        if (!hasDay(a) && !hasDay(b)) return 0;
+        if (!hasDay(a)) return 1;
+        if (!hasDay(b)) return -1;
+        return a.dayOfMonth - b.dayOfMonth;
+      }),
+    }));
+  }
+
   onSave() {
     try {
       this.isSaving.set(true);

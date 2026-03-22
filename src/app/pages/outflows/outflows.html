@@ -11,6 +11,10 @@
     </div>
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4">
         <legend class="fieldset-legend">Current Expenses</legend>
+        <div class="grid grid-cols-11">
+            <button class="btn btn-sm btn-dash btn-accent me-2" (click)="sortExpenses('cost')">Sort by Cost</button>
+            <button class="btn btn-sm btn-dash btn-accent" (click)="sortExpenses('dayOfMonth')">Sort by Day</button>
+        </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             @for (expenseItem of expenseForm.expenses; track $index) {
