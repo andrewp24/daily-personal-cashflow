@@ -1,4 +1,3 @@
+# www.personaldailycashflow.com/robots.txt
 User-agent: *
-Allow: /
-
-Sitemap: https://www.personaldailycashflow.com/sitemap.xml
+Disallow: /
