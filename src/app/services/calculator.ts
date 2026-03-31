@@ -1,6 +1,7 @@
-import { Injectable, signal, computed } from "@angular/core";
+import { Injectable, inject, signal, computed } from "@angular/core";
 import { InflowData } from "../pages/inflows/interfaces";
 import { ExpenseData } from "../pages/outflows/interfaces";
+import { ProfileService } from "./profile";
 
 export interface CashflowEvent {
   name: string;
@@ -14,24 +15,39 @@ export interface DailyCashflow {
   events: CashflowEvent[];
 }
 
-const INFLOW_KEY = "pdc_inflows";
-const OUTFLOW_KEY = "pdc_outflows";
-
 @Injectable({
   providedIn: "root",
 })
 export class CalculatorService {
-  inflowData = signal<InflowData | null>(this.loadFromStorage(INFLOW_KEY));
-  expenseData = signal<ExpenseData | null>(this.loadFromStorage(OUTFLOW_KEY));
+  private profile = inject(ProfileService);
+
+  inflowData = signal<InflowData | null>(
+    this.loadFromStorage(this.profile.activeInflowKey()),
+  );
+  expenseData = signal<ExpenseData | null>(
+    this.loadFromStorage(this.profile.activeOutflowKey()),
+  );
 
   setInflowData(data: InflowData) {
     this.inflowData.set(data);
-    localStorage.setItem(INFLOW_KEY, JSON.stringify(data));
+    localStorage.setItem(this.profile.activeInflowKey(), JSON.stringify(data));
   }
 
   setExpenseData(data: ExpenseData) {
     this.expenseData.set(data);
-    localStorage.setItem(OUTFLOW_KEY, JSON.stringify(data));
+    localStorage.setItem(
+      this.profile.activeOutflowKey(),
+      JSON.stringify(data),
+    );
+  }
+
+  reloadFromStorage(): void {
+    this.inflowData.set(
+      this.loadFromStorage(this.profile.activeInflowKey()),
+    );
+    this.expenseData.set(
+      this.loadFromStorage(this.profile.activeOutflowKey()),
+    );
   }
 
   parseMoney(value: string): number {

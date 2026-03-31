@@ -1,38 +1,140 @@
+<!-- Profiles Section -->
+<div class="flex items-start gap-4 ms-5 mb-4">
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+        <legend class="fieldset-legend">Profiles</legend>
+        <div class="flex flex-col gap-2">
+            @for (p of profile.profiles(); track p.id) {
+            <div class="flex items-center gap-2">
+                <span class="flex-1 text-sm font-medium">{{ p.name }}</span>
+                @if (p.id === profile.activeProfileId()) {
+                <span class="badge badge-primary badge-sm">Active</span>
+                } @else {
+                <button class="btn btn-xs btn-primary btn-ghost" (click)="switchProfile(p.id)">Switch</button>
+                }
+                <button class="btn btn-xs btn-ghost" (click)="openRenameProfile(p.id, p.name)">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                </button>
+                @if (profile.profiles().length > 1) {
+                <button class="btn btn-xs btn-error btn-ghost" (click)="openDeleteProfile(p.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+                }
+            </div>
+            }
+        </div>
+        <button class="btn btn-sm btn-dash btn-accent mt-3" (click)="openCreateProfile()">+ New Profile</button>
+    </fieldset>
+</div>
+
+<!-- Create Profile Modal -->
+<dialog id="create_profile_modal" class="modal">
+    <div class="modal-box">
+        <h3 class="text-lg font-bold">Create New Profile</h3>
+        <div class="py-4">
+            <label class="label">Profile Name</label>
+            <input type="text" class="input input-bordered w-full" placeholder="e.g. Spouse, Business"
+                [value]="newProfileName()" (input)="newProfileName.set($any($event.target).value)"
+                (keyup.enter)="createProfile()" />
+        </div>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cancel</button>
+            </form>
+            <button class="btn btn-primary" [disabled]="!newProfileName().trim()" (click)="createProfile()">Create</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<!-- Rename Profile Modal -->
+<dialog id="rename_profile_modal" class="modal">
+    <div class="modal-box">
+        <h3 class="text-lg font-bold">Rename Profile</h3>
+        <div class="py-4">
+            <label class="label">New Name</label>
+            <input type="text" class="input input-bordered w-full" [value]="renameProfileName()"
+                (input)="renameProfileName.set($any($event.target).value)" (keyup.enter)="confirmRename()" />
+        </div>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cancel</button>
+            </form>
+            <button class="btn btn-primary" [disabled]="!renameProfileName().trim()"
+                (click)="confirmRename()">Rename</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<!-- Delete Profile Modal -->
+<dialog id="delete_profile_modal" class="modal">
+    <div class="modal-box">
+        <h3 class="text-lg font-bold">Delete Profile</h3>
+        <p class="py-4">This will permanently delete this profile and all of its inflow/outflow data. You cannot undo
+            this.</p>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cancel</button>
+            </form>
+            <button class="btn btn-error" (click)="confirmDeleteProfile()">Delete</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<!-- Export Section -->
 <div class="flex items-start gap-4 ms-5">
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
         <legend class="fieldset-legend">Export</legend>
         <button class="btn btn-dash btn-accent" (click)="exportToFile()">Export Outflows & Inflows via
             JSON file</button>
-        <label class="label">Produces a .json file which can be imported below</label>
+        <label class="label">Produces a .json file for the active profile which can be imported below</label>
     </fieldset>
 </div>
 
+<!-- Import Section -->
 <div class="flex items-start gap-4 ms-5">
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
         <legend class="fieldset-legend">Import</legend>
         <fieldset class="fieldset">
             <legend class="fieldset-legend">Choose a Save File</legend>
             <input type="file" class="file-input file-input-accent" accept=".json" (change)="importFromFile($event)" />
-            <label class="label">Only .json files</label>
+            <label class="label">Only .json files — imports into the active profile</label>
         </fieldset>
     </fieldset>
 </div>
 
+<!-- Delete Data Section -->
 <div class="flex items-start gap-4 ms-5">
     <fieldset class="fieldset bg-base-200 border-red-900 rounded-box w-xs border p-4">
         <legend class="fieldset-legend">Delete</legend>
         <fieldset class="fieldset">
-            <legend class="fieldset-legend">Delete Saved Data</legend>
-            <button class="btn btn-dash btn-error" onclick="delete_modal.showModal()">Delete Saved Data</button>
-            <label class="label">This will permanently delete all of your data.</label>
+            <legend class="fieldset-legend">Clear Profile Data</legend>
+            <button class="btn btn-dash btn-error" onclick="delete_modal.showModal()">Clear Profile Data</button>
+            <label class="label">This will permanently delete the active profile's data and reset the theme.</label>
         </fieldset>
     </fieldset>
 </div>
 
 <dialog id="delete_modal" class="modal">
     <div class="modal-box">
-        <h3 class="text-lg font-bold">Delete All Data</h3>
-        <p class="py-4">This will permanently delete all of your saved data (inflows, outflows, and theme). You cannot undo this unless you have exported your data.</p>
+        <h3 class="text-lg font-bold">Clear Profile Data</h3>
+        <p class="py-4">This will permanently delete the active profile's inflows, outflows, and theme. You cannot undo
+            this unless you have exported your data.</p>
         <div class="modal-action">
             <form method="dialog">
                 <button class="btn">Cancel</button>
